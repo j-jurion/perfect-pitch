@@ -1,4 +1,7 @@
 import random
+import os
+from sounds import Sounds
+from playsound import playsound
 
 class Game():
 
@@ -11,17 +14,22 @@ class Game():
       self.amountExercises = 20
       self.exerciseNumber = 0
 
-      self.notes = ["fa#4", "fa4", "mi4", "re#4", "re4", "do#4", "do4", "si3", "la#3", "la3", "sol#3", \
-      "sol3", "fa#3", "fa3", "mi3", "re#3", "re3", "do#3", "do3", "si2", "la#2", "la2", "sol#2", "sol2", \
-      "fa#2", "fa2", "mi2", "re#2", "re2", "do#2", "do2", "si1", "la#1"]
-      self.sounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      
+      self.notes = [\
+      "fa#4", "fa4", "mi4", "re#4", "re4", "do#4", "do4", \
+      "si3", "la#3", "la3", "sol#3", "sol3", "fa#3", "fa3", "mi3", "re#3", "re3", "do#3", "do3", \
+      "si2", "la#2", "la2", "sol#2", "sol2", "fa#2", "fa2", "mi2", "re#2", "re2", "do#2", "do2", \
+      "si1", "la#1"]
+      self.sounds = []
 
-      self.exerciseNotes = []
 
     # Start game with given notes
-    def start(self, notes):
-      self.exerciseNotes = notes
-      print(f"Starting game {self.exerciseNotes} {self.amountExercises}")
+    def start(self, notesIndex):
+      print(f"Starting game {notesIndex} {self.amountExercises}")
+      for i in notesIndex:
+        self.sounds.append(Sounds.soundFileNames[i])
+      self.current_sound = self.get_random_sound()
+      
 
     # Update the current score with given feedback value
     def update_score(self, value):
@@ -58,9 +66,23 @@ class Game():
     def read_highscore(self):
       file = open("highscore.txt","r")
       return int(file.read())
+    
+    def next_round(self, value):
+      self.exerciseNumber += 1
+      self.update_score(value)
+      if self.exerciseNumber < self.amountExercises:
+        self.current_sound = self.get_random_sound()
+        self.play_sound(self.current_sound)
+
+
+    def get_random_sound(self):
+      sound = random.choice(self.sounds)
+      sound = os.path.join(Sounds.pianoSoundDir,sound)
+      return sound
 
     # Play random sound from sounds
-    def play_sound(self):
-      sound = random.choice(self.sounds)
+    def play_sound(self, sound):
+      playsound(sound, False)
       print(f"Play sound: {sound}")
+
 

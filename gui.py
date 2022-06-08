@@ -121,7 +121,7 @@ class GUI(QMainWindow):
       notesUsed = []
       for i in range(len(self.combo)-1):
         if self.combo.itemChecked(i):
-          notesUsed.append(notes[i])
+          notesUsed.append(i)
       self.game.start(notesUsed)
 
       self.combo.setEnabled(False)
@@ -139,13 +139,11 @@ class GUI(QMainWindow):
     
     # Click play
     def play_clicked(self):
-      self.game.play_sound()
-      print("Play")
+      self.game.play_sound(self.game.current_sound)
 
     # Click on feedback buttons
     def feedback_clicked(self, value):
-      self.game.exerciseNumber += 1
-      self.game.update_score(value)
+      self.game.next_round(value)
       if self.game.exerciseNumber >= self.game.amountExercises:
         self.game.finalize()
         self.stop_clicked()
